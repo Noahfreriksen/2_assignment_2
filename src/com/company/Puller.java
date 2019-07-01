@@ -9,17 +9,20 @@ import java.net.URL;
  * Noah Freriksen
  * 402535
  *
- * This class pull an RSS feed form a given URL. Format of the page needs to be in XML
+ * This class pull an RSS feed from news.google for a given location
  */
 
 class Puller {
 
     /**
-     * @param url URL to page
+     * @param location place of requested news
      * @return String array with the title and link to the news
      * @throws IOException for readers
      */
-    String[] pull(String url) throws IOException {
+    String[] pull(String location) throws IOException {
+
+        // Initialize google news url with given location
+        String url = "https://news.google.com/news/rss/headlines/section/geo/" + location;
 
         // Initialize some variables and the bufferedreader
         URL rssURL = new URL(url);
@@ -50,6 +53,15 @@ class Puller {
             int lastPos = temp.indexOf("</link>");
             temp = temp.substring(0,lastPos);
             link += temp + "\n";
+        }
+
+        /*
+        Check if news was retrieved.
+        If there was no news available change the title and link
+         */
+        if (title.contains("This feed is not available.")){
+            title = "No news for this place";
+            link = "";
         }
 
         // Close the bufferedreader
